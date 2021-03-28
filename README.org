@@ -1,0 +1,14 @@
+=dyncloze= is a simple emacs application to test yourself on confused alternatives, using the contents of an emacs buffer.
+
+To use, load the library by placing it your =load-path=, and =(require 'dyncloze)=.  Then, fill a buffer with text in your target language, and use =M-x dyncloze=.  It will prompt you for words to test between, enter words separated by spaces.
+
+For each word matches the words you entered, it will replace the word in the buffer with "[ ]", and then it will go through the buffer, top to bottom, asking you which word belongs in the space.
+
+If you guess correctly, the word will appear in green, otherwise it will appear in red.  When you are done, you will receive a total.
+
+[[./screenshots/dyncloze example.png]]
+
+
+
+
+
