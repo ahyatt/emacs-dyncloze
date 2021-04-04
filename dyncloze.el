@@ -1,11 +1,11 @@
-;;; dyncloze.el --- A way to test yourself on buffer contents against
-;;; a defined set of possible alternatives.
+;;; dyncloze.el --- Language alternatives self-testing -*- lexical-binding:t -*-
 
 (require 'cl-macs)
 (require 'dash)
+(require 'rx)
 
 ;;; Commentary:
-;; This is primarily designed for language learning.
+;; This package is primarily designed for language learning.
 ;; To use, run the command `dyncloze' with the alternatives you want to choose
 ;; from. The program will test you on each occurance (if any), and mark each
 ;; answer in green or red depending on whether you got it correct. To clear the
