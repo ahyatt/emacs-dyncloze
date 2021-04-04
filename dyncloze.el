@@ -3,6 +3,7 @@
 (require 'cl-macs)
 (require 'dash)
 (require 'rx)
+(require 'subr-x)
 
 ;;; Commentary:
 ;; This package is primarily designed for language learning.
