@@ -20,19 +20,19 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;; This package is primarily designed for language learning.
+;; To use, run the command `dyncloze' with the alternatives you want to choose
+;; from. The program will test you on each occurence (if any), and mark each
+;; answer in green or red depending on whether you got it correct. To clear the
+;; buffer of these marks, run `dyncloze-erase'.
+
+;;; Code:
+
 (require 'cl-lib)
 (require 'dash)
 (require 'rx)
 (require 'subr-x)
-
-;;; Commentary:
-;; This package is primarily designed for language learning.
-;; To use, run the command `dyncloze' with the alternatives you want to choose
-;; from. The program will test you on each occurance (if any), and mark each
-;; answer in green or red depending on whether you got it correct. To clear the
-;; buffer of these marks, dun `dyncloze-erase'.
-
-;;; Code:
 
 (defun dyncloze-prompt (targets)
   "Create prompt for answer based on TARGETS."
