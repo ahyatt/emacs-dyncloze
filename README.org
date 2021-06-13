@@ -8,7 +8,4 @@ If you guess correctly, the word will appear in green, otherwise it will appear 
 
 [[./screenshots/dyncloze example.png]]
 
-
-
-
-
+This module also offers the ability to use regex's instead of words, meaning that you can test for patterns, such as word variants or ending patterns.  There are several examples given in companian modules, such as =dyncloze-es= and =dyncloze-pt=, where you can test for things such as "ser" vs. "estar", which will not only test for the infinite forms but other common forms as well.

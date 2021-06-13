@@ -4,7 +4,7 @@
 
 ;; Author: Andrew Hyatt <ahyatt@gmail.com>
 ;; Homepage: https://github.com/ahyatt/dyncloze
-;; Version: 0.1
+;; Version: 0.2
 ;; Package-Requires: ((emacs "25.1") (dash "2.18"))
 
 ;; This program is free software: you can redistribute it and/or modify
@@ -26,6 +26,9 @@
 ;; from. The program will test you on each occurence (if any), and mark each
 ;; answer in green or red depending on whether you got it correct. To clear the
 ;; buffer of these marks, run `dyncloze-erase'.
+;;
+;; The `dyncloze' command can also be used as a function for other more advanced
+;; forms of clozes, since it can take in more complicated regexes.
 
 ;;; Code:
 
@@ -34,16 +37,27 @@
 (require 'rx)
 (require 'subr-x)
 
+(defun dyncloze-label (target)
+  "Return the appropriate label to display from TARGET."
+  (if (consp target) (cdr target) target))
+
+(defun dyncloze-regex (target)
+  "Return the appropriate regex to display from TARGET."
+  (if (consp target)
+      (rx space (regexp (car target))  (or space line-end))
+    (rx space (literal target) (or space line-end))))
+
 (defun dyncloze-prompt (targets)
   "Create prompt for answer based on TARGETS."
   (concat (string-join
            (mapcar (lambda (i)
-                     (format "[%d] %s" (+ i 1) (nth i targets)))
+                     (format "[%d] %s" (+ i 1)
+                             (dyncloze-label (nth i targets))))
                    (number-sequence 0 (- (length targets) 1)))
            " ") " [q] quit:"))
 
 (defun dyncloze-get-answer (targets)
-  "Read a valid answer choosing from TARGETS.
+  "Read regex corresponding to answer chosen from TARGETS.
 Returns the matching target string, or nil for quit."
   (let ((num 0)
         (quit nil))
@@ -56,7 +70,7 @@ Returns the matching target string, or nil for quit."
             (setq quit t)
           (setq num (string-to-number
                  response)))))
-    (unless quit (nth (- num 1) targets))))
+    (unless quit (dyncloze-regex (nth (- num 1) targets)))))
 
 (defun dyncloze-hide ()
   "Hides the word under point."
@@ -92,7 +106,10 @@ colors.  ALso remove the cloze display."
     (delete-overlay o)))
 
 (defun dyncloze (targets)
-  "Run a testing session with TARGETS on the current buffer."
+  "Run a testing session with TARGETS on the current buffer.
+Targets can be a list of strings or conses with regex and display
+string in them. The targets do not all have to be the same type,
+it can be a mix of strings and conses."
   (interactive "sTargets: ")
   (save-excursion
     (let ((orig-blink-mode (member 'blink-cursor-mode minor-mode-list))
@@ -105,20 +122,21 @@ colors.  ALso remove the cloze display."
                              (split-string targets))))
               (dolist (target targets)
                 (goto-char (point-min))
-                (let ((regexp (rx space (literal target) (or space line-end))))
+                (let ((regexp (dyncloze-regex target)))
                   (while (re-search-forward regexp (point-max) t)
                     (backward-word)
-                    (dyncloze-hide))))
+                    (dyncloze-hide)
+                    (forward-word))))
               (goto-char (point-min))
               (dolist (o (dyncloze-overlays))
                 (goto-char (overlay-start o))
-                (let ((answer (dyncloze-get-answer targets)))
-                  (if answer
+                (let ((answer-regex (dyncloze-get-answer targets)))
+                  (if answer-regex
                       (dyncloze-mark
                        o
-                       (string-equal answer
-                                     (downcase (buffer-substring (overlay-start o)
-                                                                 (overlay-end o)))))
+                       (string-match answer-regex
+                                     (downcase (buffer-substring (- (overlay-start o) 1)
+                                                                 (+ (overlay-end o) 1)))))
                     (cl-return))
                   (redisplay)
                   (sleep-for 2)))))
