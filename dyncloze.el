@@ -3,7 +3,7 @@
 ;; Copyright (C) 2021 Andrew Hyatt
 
 ;; Author: Andrew Hyatt <ahyatt@gmail.com>
-;; Homepage: https://github.com/ahyatt/dyncloze
+;; Homepage: https://github.com/ahyatt/emacs-dyncloze
 ;; Version: 0.2
 ;; Package-Requires: ((emacs "25.1") (dash "2.18"))
 
